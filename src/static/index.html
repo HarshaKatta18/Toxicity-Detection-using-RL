@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐍 Snake & Ladders – Toxicity Moderated Game</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="game-header">
+    <div class="header-content">
+      <h1>🐍 Snake & Ladders</h1>
+      <button id="headerRestartBtn" class="action-btn secondary-btn small-btn">
+        🔄 Restart
+      </button>
+    </div>
+    <p class="subtitle">Toxicity-Moderated Multiplayer Game with RL Agent</p>
+  </header>
+
+  <div class="game-container">
+    <div class="game-main">
+      <div class="board-section">
+        <div class="board-container">
+          <canvas id="boardCanvas" width="600" height="600"></canvas>
+        </div>
+        <div class="game-info">
+          <div class="info-card">
+            <h3>🎲 Current Turn</h3>
+            <div id="currentPlayer">Waiting...</div>
+          </div>
+          <div class="info-card">
+            <h3>🎯 Last Roll</h3>
+            <div id="lastRoll">-</div>
+          </div>
+          <div class="info-card">
+            <h3>🏆 Winner</h3>
+            <div id="winner">No winner yet</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-panel">
+        <div class="players-section">
+          <h3>👥 Players</h3>
+          <div id="playersList" class="players-grid"></div>
+        </div>
+
+        <div class="actions-section">
+          <button id="rollBtn" class="action-btn primary-btn">
+            <span class="btn-icon">🎲</span>
+            Roll Dice
+          </button>
+          <button id="restartBtn" class="action-btn secondary-btn">
+            <span class="btn-icon">🔄</span>
+            Restart Game
+          </button>
+        </div>
+
+        <div class="log-section">
+          <h3>📋 Game Log</h3>
+          <div id="log" class="game-log"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-section">
+      <div class="chat-header">
+        <h3>💬 Chat Room</h3>
+        <div class="chat-info">
+          <span class="toxicity-indicator">⚠️ Toxicity Moderated</span>
+        </div>
+      </div>
+      <div id="chatBox" class="chat-messages"></div>
+      <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Type your message..." maxlength="200" />
+        <button id="sendBtn" class="send-btn">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="client.js"></script>
+</body>
+</html>
