@@ -72,8 +72,18 @@ def on_chat(msg):
 
     pt = TOX_MODEL.score_proba(text)
     warnings = player.warnings
-    action_idx = AGENT.act(pt, warnings)
-    action = ACTIONS[action_idx]
+
+    # Enforce stricter moderation for high toxicity
+    if pt >= 0.7:
+        if warnings >= 1:
+            action = "kick"
+            action_idx = ACTIONS.index(action)
+        else:
+            action = "warn"
+            action_idx = ACTIONS.index(action)
+    else:
+        action_idx = AGENT.act(pt, warnings)
+        action = ACTIONS[action_idx]
 
     pseudo_label = 1 if pt >= 0.5 else 0
     AGENT.update(pt, warnings, action_idx, pseudo_label)
@@ -83,12 +93,7 @@ def on_chat(msg):
         emit("chat:broadcast", {"pid": pid, "text": text, "flag": "ok", "p": pt}, broadcast=True)
     elif action == "warn":
         player.warnings += 1
-        if player.warnings >= 3:
-            action = "kick"
-            player.active = False
-            emit("chat:broadcast", {"pid": pid, "text": text, "flag": "kick", "p": pt}, broadcast=True)
-        else:
-            emit("chat:broadcast", {"pid": pid, "text": text, "flag": "warn", "p": pt}, broadcast=True)
+        emit("chat:broadcast", {"pid": pid, "text": text, "flag": "warn", "p": pt}, broadcast=True)
     else:
         player.active = False
         emit("chat:broadcast", {"pid": pid, "text": text, "flag": "kick", "p": pt}, broadcast=True)

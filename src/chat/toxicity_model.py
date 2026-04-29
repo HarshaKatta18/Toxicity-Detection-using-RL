@@ -12,8 +12,17 @@ TFIDF_PATH = os.path.join(MODELS_DIR, "tfidf_vectorizer.pkl")
 LOGREG_PATH = os.path.join(MODELS_DIR, "toxicity_logreg.pkl")
 
 def _clean_text(text: str) -> str:
-    """Basic cleaning for text input."""
+    """Basic cleaning for text input, including leetspeak normalization."""
     text = text.lower()
+    # Normalize common numeric obfuscations so 'idi0t' becomes 'idiot'.
+    text = text.translate(str.maketrans({
+        "0": "o",
+        "1": "i",
+        "3": "e",
+        "4": "a",
+        "5": "s",
+        "7": "t",
+    }))
     text = re.sub(r"http\S+", " ", text)
     text = re.sub(r"[^a-z0-9\s]+", " ", text)
     text = re.sub(r"\s+", " ", text).strip()
@@ -49,7 +58,7 @@ class ToxicityModel:
         """Return the toxicity probability of a message."""
         if not self.is_ready():
             # simple rule fallback
-            toxic_words = {"idiot", "stupid", "noob", "trash", "hate", "kill", "dumb"}
+            toxic_words = {"idiot", "idi0t", "stupid", "noob", "n0ob", "trash", "hate", "kill", "dumb"}
             words = set(_clean_text(text).split())
             return 0.9 if len(toxic_words & words) > 0 else 0.1
 
